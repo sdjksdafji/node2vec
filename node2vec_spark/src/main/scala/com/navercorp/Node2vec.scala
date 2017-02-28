@@ -208,7 +208,7 @@ object Node2vec extends Serializable {
   def loadNode2Id(node2idPath: String): this.type = {
     try {
       this.node2id = context.textFile(config.nodePath).map { node2index =>
-        val Array(strNode, index) = node2index.split("\\s")
+        val Array(strNode, index) = node2index.split(",")
         (strNode, index.toLong)
       }
     } catch {
@@ -225,7 +225,7 @@ object Node2vec extends Serializable {
     val rawTriplets = context.textFile(tripletPath)
     if (config.nodePath == null) {
       this.node2id = createNode2Id(rawTriplets.map { triplet =>
-        val parts = triplet.split("\\s")
+        val parts = triplet.split(",")
         (parts.head, parts(1), -1)
       })
     } else {
@@ -233,7 +233,7 @@ object Node2vec extends Serializable {
     }
 
     rawTriplets.map { triplet =>
-      val parts = triplet.split("\\s")
+      val parts = triplet.split(",")
       val weight = bcWeighted.value match {
         case true => Try(parts.last.toDouble).getOrElse(1.0)
         case false => 1.0
@@ -246,7 +246,7 @@ object Node2vec extends Serializable {
 
   def indexingGraph(rawTripletPath: String): RDD[(Long, Long, Double)] = {
     val rawEdges = context.textFile(rawTripletPath).map { triplet =>
-      val parts = triplet.split("\\s")
+      val parts = triplet.split(",")
 
       Try {
         (parts.head, parts(1), Try(parts.last.toDouble).getOrElse(1.0))
