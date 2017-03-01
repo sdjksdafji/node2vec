@@ -15,6 +15,7 @@ object Main {
   case class Params(iter: Int = 10,
                     lr: Double = 0.025,
                     numPartition: Int = 10,
+                    rddPartition: Int = 200,
                     dim: Int = 128,
                     window: Int = 10,
                     walkLength: Int = 80,
@@ -54,6 +55,12 @@ object Main {
     opt[Int]("degree")
             .text(s"degree: ${defaultParams.degree}")
             .action((x, c) => c.copy(degree = x))
+    opt[Int]("dim")
+      .text(s"dim: ${defaultParams.dim}")
+      .action((x, c) => c.copy(dim = x))
+    opt[Int]("rddPartition")
+      .text(s"rddPartition: ${defaultParams.rddPartition}")
+      .action((x, c) => c.copy(rddPartition = x))
     opt[Boolean]("indexed")
             .text(s"Whether nodes are indexed or not: ${defaultParams.indexed}")
             .action((x, c) => c.copy(indexed = x))
