@@ -35,10 +35,10 @@ object Node2vec extends Serializable {
       case false => context.broadcast(GraphOps.createUndirectedEdge)
     }
 
-    val inputTriplets: RDD[(Long, Long, Double)] = config.indexed match {
+    val inputTriplets: RDD[(Long, Long, Double)] = (config.indexed match {
       case true => readIndexedGraph(config.input)
       case false => indexingGraph(config.input)
-    }
+    }).repartition(config.rddPartition).cache
 
     indexedNodes = inputTriplets.flatMap { case (srcId, dstId, weight) =>
       bcEdgeCreator.value.apply(srcId, dstId, weight)
