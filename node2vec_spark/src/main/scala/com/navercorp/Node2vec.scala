@@ -85,7 +85,9 @@ object Node2vec extends Serializable {
   }
 
   def randomWalk(): this.type = {
-    val edge2attr = graph.triplets.map { edgeTriplet =>
+    val triplets = graph.triplets.cache()
+    println("\n [HollyShit] number of partitions of triplets " + triplets.getNumPartitions)
+    val edge2attr = triplets.map { edgeTriplet =>
       (s"${edgeTriplet.srcId}${edgeTriplet.dstId}", edgeTriplet.attr)
     }.repartition(config.rddPartition).cache
     edge2attr.first
